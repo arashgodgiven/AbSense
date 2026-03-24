@@ -5,37 +5,30 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 import os
 
-# Load data
-df = pd.read_csv("../data/water_potability.csv")
+sdf = pd.read_csv("../data/water_potability.csv")
 
 print(f"Dataset shape: {df.shape}")
 print(f"\nColumns: {list(df.columns)}")
 print(f"\nMissing values:\n{df.isnull().sum()}")
 
-# Fill missing values with column means
 df = df.fillna(df.mean())
 
-# We don't need the 'Potability' label — anomaly detection is unsupervised
 features = df.drop(columns=["Potability"])
 
-# Scale the features
 scaler = StandardScaler()
 scaled = scaler.fit_transform(features)
 
-# Train Isolation Forest
 model = IsolationForest(
     n_estimators=100,
-    contamination=0.05,  # assume ~5% of readings are anomalies
+    contamination=0.05,
     random_state=42
 )
 model.fit(scaled)
 
-# Quick sanity check
 predictions = model.predict(scaled)
 anomaly_count = list(predictions).count(-1)
 print(f"\nAnomalies detected: {anomaly_count} out of {len(df)} samples")
 
-# Save model and scaler for the API to use later
 os.makedirs("../models", exist_ok=True)
 with open("../models/model.pkl", "wb") as f:
     pickle.dump(model, f)
