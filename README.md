@@ -7,6 +7,12 @@ AbSense analyzes water sensor readings (pH, turbidity, hardness, etc.) and flags
 anomalies using a machine learning model trained on real-world water quality data.
 Unusual readings are detected, scored, and logged for trend analysis.
 
+## About the name
+AbSense combines **"Ab"** (آب) — the Persian/Farsi word for water — with **"Sense"**, 
+reflecting both the sensor-driven nature of the project and the idea of making sense 
+of water quality data. The name also carries a subtle double meaning: detecting the 
+*absence* of normal patterns in sensor readings.
+
 ## Tech Stack
 - **ML Model** — Isolation Forest (scikit-learn) trained on the Water Potability dataset
 - **Backend** — Python, FastAPI, REST API
