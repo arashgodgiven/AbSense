@@ -7,19 +7,12 @@ import os
 from pymongo import MongoClient
 from fastapi.middleware.cors import CORSMiddleware
 
-# Load model and scaler
-# with open("../models/model.pkl", "rb") as f:
-#     model = pickle.load(f)
-# with open("../models/scaler.pkl", "rb") as f:
-#     scaler = pickle.load(f)
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(BASE_DIR, "models", "model.pkl"), "rb") as f:
     model = pickle.load(f)
 with open(os.path.join(BASE_DIR, "models", "scaler.pkl"), "rb") as f:
     scaler = pickle.load(f)
 
-# MongoDB connection
 client = MongoClient("mongodb://localhost:27017/")
 db = client["absense"]
 collection = db["readings"]
@@ -67,7 +60,6 @@ def predict(reading: SensorReading):
     score = model.decision_function(scaled)[0]
     is_anomaly = bool(prediction == -1)
 
-    # Save every reading to MongoDB
     document = {
         "timestamp": datetime.utcnow(),
         "reading": reading.dict(),
@@ -85,7 +77,6 @@ def predict(reading: SensorReading):
 
 @app.get("/anomalies")
 def get_anomalies():
-    # Return the last 20 flagged anomalies
     results = list(collection.find(
         {"anomaly": True},
         {"_id": 0}
